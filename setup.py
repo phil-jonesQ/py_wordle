@@ -19,7 +19,8 @@ class Setup:
         self.yellow = (255, 255, 0) # Yellow color for partially correct letters
         self.red = (255, 0, 0) # Red color for incorrect letters
         self.green = (0, 255, 0) # Green color for fully correct letters
-        self.grey = (222,222,222)
+        self.grey = (222, 222, 222)
+        self.cyan = (0, 100, 100)
         self.grid_size = (6, 5) # Rows, Cols
         self.cell_size = 80
 

@@ -16,14 +16,15 @@ def draw_grid(surface):
     """
     Draw the grid on the surface
     """
-    # Generate random letters for the grid
-    #letters = [[random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ') for _ in range(su.grid_size[1])] for _ in range(su.grid_size[0])]
-
     # Draw the grid
     for row in range(su.grid_size[0]):
         for col in range(su.grid_size[1]):
-            pygame.draw.rect(surface, (255, 200, 200), (col * su.cell_size, row * su.cell_size, su.cell_size, su.cell_size), 2)
-
+            pygame.draw.rect(surface,
+                            (su.cyan),
+                            (col * su.cell_size,
+                             row * su.cell_size,
+                             su.cell_size,
+                             su.cell_size), 2)
 
 
 def load_random_word():
@@ -86,8 +87,6 @@ def main():
                     current_row = 0
                     current_col = 0
                 
-                
-
                 # Check if the guessed letter is in the word
                 if key_char in the_word:
                     letter_indices = [i for i, letter in enumerate(the_word) if letter == key_char]
@@ -101,22 +100,16 @@ def main():
         draw_grid(su.surface)
         font = pygame.font.Font(None, 36)
         guessed_text = font.render(" ".join(guessed_word), True, su.black)
-        su.surface.blit(guessed_text, (su.window_width // 1.25 - guessed_text.get_width() // 2, su.window_height // 1.25 - guessed_text.get_height() // 2))
+        su.surface.blit(guessed_text, (su.window_width // 1.25 - guessed_text.get_width() // 2,
+                                        su.window_height // 1.25 - guessed_text.get_height() // 2))
 
 
         for row in range(su.grid_size[0]):
              for col in range(su.grid_size[1]):
-                #row_offset = offset // su.grid_size[1]
-                #font = pygame.font.Font(None, 36)
-                #text_surface = font.render(letters[row][col], True, (0, 0, 0))
-                #surface.blit(text_surface, (col * su.cell_size + su.cell_size // 2 - text_surface.get_width() // 2,
-                #                              row * su.cell_size + su.cell_size // 2 - text_surface.get_height() // 2))
                 key_char_text = font.render(letter_store[row][col], True, su.grey)
                 su.surface.blit(key_char_text, (col * su.cell_size + su.cell_size // 2 - key_char_text.get_width() // 2,
                                                 row * su.cell_size + su.cell_size // 2 - key_char_text.get_height() // 2))
-                #print("debug " + str(col) + str(row))
                 
-
         # Update the display
         pygame.display.flip()
 
