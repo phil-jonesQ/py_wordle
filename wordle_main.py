@@ -55,8 +55,9 @@ def main():
     # Load word list
     the_word = load_random_word()
 
-    # Initialise the letter store
-    letter_store = [[ '_' for _ in range(su.grid_size[1])] for _ in range(su.grid_size[0])]
+    # Initialise the letter 
+    # Need to make a spare end column for backspace
+    letter_store = [[ '_' for _ in range(su.grid_size[1] + 1)] for _ in range(su.grid_size[0])]
 
     # Initialise the guessed word
     print("Debug here is the word " + the_word)
@@ -65,6 +66,7 @@ def main():
     # Initialise the row and col counter
     current_row = 0
     current_col = 0
+    del_counter = 0
 
     # Main game loop
     while True:
@@ -73,19 +75,30 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    current_row = current_row + 1
+                    current_col = 0
+                    if current_row == su.grid_size[0]:
+                        current_row = 0
+                        current_col = 0
+                    # Add logic to check if we got any letters etc
+                if event.key == pygame.K_BACKSPACE:
+                    letter_store[current_row][current_col - 1] = '_'
+                    current_col = current_col - 1
+                    if current_col <= 0:
+                        current_col = 0
+
+
+
             if event.type == pygame.KEYDOWN and event.key >= 97 and event.key <= 122:
                 key_char = chr(event.key).upper()
                 letter_store[current_row][current_col] = key_char
-
+      
                 # Increment the col
-                print(current_col,current_row)
                 current_col = current_col + 1
-                if current_col == su.grid_size[1]:
-                    current_col = 0
-                    current_row = current_row + 1
-                if current_row == su.grid_size[0]:
-                    current_row = 0
-                    current_col = 0
+                if current_col >= su.grid_size[1]:
+                    current_col = su.grid_size[1]
                 
                 # Check if the guessed letter is in the word
                 if key_char in the_word:
@@ -103,7 +116,7 @@ def main():
         su.surface.blit(guessed_text, (su.window_width // 1.25 - guessed_text.get_width() // 2,
                                         su.window_height // 1.25 - guessed_text.get_height() // 2))
 
-
+        #print(letter_store)
         for row in range(su.grid_size[0]):
              for col in range(su.grid_size[1]):
                 key_char_text = font.render(letter_store[row][col], True, su.grey)
