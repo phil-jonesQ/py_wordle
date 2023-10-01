@@ -1,0 +1,5 @@
+venv
+dist
+.venv
+*.exe
+*.zip
