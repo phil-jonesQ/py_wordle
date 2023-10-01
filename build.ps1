@@ -1,6 +1,7 @@
 # Setup
 $app_name="wordle_main.py"
 $requirements=".\requirements.txt" # Create with pip freeze > pip_requirements.txt
+$path_to_build_util=".\.venv\Lib\site-packages\PyInstaller" # Path to PyInstaller (creates exe from python source)
 $python_version=$(& python --version).split(' ').split('.')
 $python_version_major_required=[int]"3"
 $python_version_minor_required=[int]"10"
