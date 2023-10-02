@@ -12,6 +12,14 @@ from setup import Setup
 su = Setup()
 
 
+def analyse_row(current_row, letter_store):
+    """
+    Looks at all the letters in the corrent row
+    """
+    for col in range(su.grid_size[1]):
+            print(letter_store[current_row][col])
+
+
 def draw_grid(surface):
     """
     Draw the grid on the surface
@@ -77,6 +85,7 @@ def main():
                 sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
+                    analyse_row(current_row, letter_store)
                     current_row = current_row + 1
                     current_col = 0
                     if current_row == su.grid_size[0]:
