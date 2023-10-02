@@ -12,12 +12,25 @@ from setup import Setup
 su = Setup()
 
 
-def analyse_row(current_row, letter_store):
+def have_we_won(current_row, word_store, the_word):
     """
-    Looks at all the letters in the corrent row
-    """
-    for col in range(su.grid_size[1]):
-            print(letter_store[current_row][col])
+	Check if the word_store matches the_word
+	Returns True if won, False otherwise
+	"""
+    guessed_word_extract = []
+
+    # Scan current row and build the word
+    for index in range(su.grid_size[1]):
+        guessed_word_extract.append(word_store[current_row][index])
+    
+    # Convert to a string
+    guessed_word = "".join(guessed_word_extract)
+
+    # Return the result
+    if guessed_word == the_word:
+        return True
+    else:
+        return False
 
 
 def draw_grid(surface):
@@ -74,7 +87,7 @@ def main():
     # Initialise the row and col counter
     current_row = 0
     current_col = 0
-    del_counter = 0
+    check_flag = False
 
     # Main game loop
     while True:
@@ -84,8 +97,11 @@ def main():
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    analyse_row(current_row, letter_store)
+                if event.key == pygame.K_RETURN and current_col == su.grid_size[1]:
+                    if have_we_won(current_row, letter_store, the_word):
+                        print("Congratulations! You guessed the word:", the_word)
+
+                    check_flag = True
                     current_row = current_row + 1
                     current_col = 0
                     if current_row == su.grid_size[0]:
@@ -101,6 +117,7 @@ def main():
 
 
             if event.type == pygame.KEYDOWN and event.key >= 97 and event.key <= 122:
+                check_flag = False
                 key_char = chr(event.key).upper()
                 letter_store[current_row][current_col] = key_char
       
@@ -109,11 +126,6 @@ def main():
                 if current_col >= su.grid_size[1]:
                     current_col = su.grid_size[1]
                 
-                # Check if the guessed letter is in the word
-                if key_char in the_word:
-                    letter_indices = [i for i, letter in enumerate(the_word) if letter == key_char]
-                    for index in letter_indices:
-                        guessed_word[index] = key_char
 
         # Clear the screen with background color
         su.surface.fill(su.bg_colour)
@@ -121,17 +133,21 @@ def main():
         # Draw the game 
         draw_grid(su.surface)
         font = pygame.font.Font(None, 36)
-        guessed_text = font.render(" ".join(guessed_word), True, su.black)
-        su.surface.blit(guessed_text, (su.window_width // 1.25 - guessed_text.get_width() // 2,
-                                        su.window_height // 1.25 - guessed_text.get_height() // 2))
-
+        
         #print(letter_store)
         for row in range(su.grid_size[0]):
              for col in range(su.grid_size[1]):
                 key_char_text = font.render(letter_store[row][col], True, su.grey)
+                if check_flag:
+                    if letter_store[row][col] == the_word[col]:
+                        key_char_text = font.render(letter_store[row][col], True, su.green)
+                    if letter_store[row][col] in the_word and not letter_store[row][col] == the_word[col]:
+                        key_char_text = font.render(letter_store[row][col], True, su.yellow)
+                
                 su.surface.blit(key_char_text, (col * su.cell_size + su.cell_size // 2 - key_char_text.get_width() // 2,
                                                 row * su.cell_size + su.cell_size // 2 - key_char_text.get_height() // 2))
                 
+        
         # Update the display
         pygame.display.flip()
 
