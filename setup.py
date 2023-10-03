@@ -23,6 +23,7 @@ class Setup:
         self.cyan = (0, 100, 100)
         self.grid_size = (6, 5) # Rows, Cols
         self.cell_size = 80
+        self.pad = 5
 
         # Create the window
         self.surface = pygame.display.set_mode(

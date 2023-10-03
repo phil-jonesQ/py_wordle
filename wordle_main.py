@@ -64,14 +64,15 @@ def load_random_word():
     word_to_guess = random.choice(words)
     return word_to_guess
 
-
-def main():
-    """
-    Main game loop function
-    """
-    # Initialize Pygame
-    pygame.init()
-    pygame.display.set_caption(su.app_name)
+def reset_variables():
+    # Initialise variables
+    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store
+    current_row = 0
+    current_col = 0
+    check_flag = False
+    win = False
+    loose = False
+    game_over = False
 
     # Load word list
     the_word = load_random_word()
@@ -82,12 +83,24 @@ def main():
 
     # Initialise the guessed word
     print("Debug here is the word " + the_word)
-    guessed_word = ['_' for _ in the_word]
 
-    # Initialise the row and col counter
-    current_row = 0
-    current_col = 0
-    check_flag = False
+
+def main():
+    """
+    Main game loop function
+    """
+    # Initialise Pygame
+    pygame.init()
+    pygame.display.set_caption(su.app_name)
+
+    # Initialise the font
+    font = pygame.font.Font(None, 36)
+    font_small = pygame.font.Font(None, 22)
+
+    # call the initial resest function
+    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store
+    reset_variables()
+
 
     # Main game loop
     while True:
@@ -99,22 +112,24 @@ def main():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN and current_col == su.grid_size[1]:
                     if have_we_won(current_row, letter_store, the_word):
-                        print("Congratulations! You guessed the word:", the_word)
-
+                        win = True
                     check_flag = True
                     current_row = current_row + 1
                     current_col = 0
                     if current_row == su.grid_size[0]:
+                        loose = True
                         current_row = 0
                         current_col = 0
-                    # Add logic to check if we got any letters etc
+
                 if event.key == pygame.K_BACKSPACE:
                     letter_store[current_row][current_col - 1] = '_'
                     current_col = current_col - 1
                     if current_col <= 0:
                         current_col = 0
 
-
+                if event.key == pygame.K_SPACE and game_over:
+                    game_over = False
+                    reset_variables()
 
             if event.type == pygame.KEYDOWN and event.key >= 97 and event.key <= 122:
                 check_flag = False
@@ -129,12 +144,15 @@ def main():
 
         # Clear the screen with background color
         su.surface.fill(su.bg_colour)
-        
-        # Draw the game 
+
+        #
+        # Draw the game UI
+        #
+
+        # Draw the grid
         draw_grid(su.surface)
-        font = pygame.font.Font(None, 36)
-        
-        #print(letter_store)
+
+        # Populate the letters in the grid
         for row in range(su.grid_size[0]):
              for col in range(su.grid_size[1]):
                 key_char_text = font.render(letter_store[row][col], True, su.grey)
@@ -143,11 +161,29 @@ def main():
                         key_char_text = font.render(letter_store[row][col], True, su.green)
                     if letter_store[row][col] in the_word and not letter_store[row][col] == the_word[col]:
                         key_char_text = font.render(letter_store[row][col], True, su.yellow)
-                
+                # Draw to the screen
                 su.surface.blit(key_char_text, (col * su.cell_size + su.cell_size // 2 - key_char_text.get_width() // 2,
                                                 row * su.cell_size + su.cell_size // 2 - key_char_text.get_height() // 2))
-                
-        
+        # Draw ui messages  
+        if win or loose:
+            game_over = True
+            if not loose:
+                win_message1 = font_small.render("Congratulations!", True, su.green)
+                intermediate_message2 = font_small.render("You guessed correctly!",True, su.green)
+            else:
+                win_message1 = font_small.render("Unlucky...", True, su.red)
+                intermediate_message2 = font_small.render("You ran out of guesses!",True, su.black)
+            intermediate_message3 = font_small.render(f"The word was: {the_word}", True, su.black)
+            su.surface.blit(win_message1,((su.cell_size * 5 + su.pad), (su.cell_size // 4)))
+            su.surface.blit(intermediate_message2, ((su.cell_size * 5 + su.pad), (su.cell_size // 4 + win_message1.get_height())))
+            su.surface.blit(intermediate_message3, ((su.cell_size * 5 + su.pad), (su.cell_size // 4 + win_message1.get_height() * 2)))
+
+        if game_over:
+            game_over_message1 = font_small.render("Game Over!", True, su.red)
+            game_over_message2 = font_small.render("SPACE to restart", True, su.green)
+            su.surface.blit(game_over_message1,((su.cell_size * 5 + su.pad), (su.window_height // 2)))
+            su.surface.blit(game_over_message2,((su.cell_size * 5 + su.pad), (su.window_height // 2 + game_over_message2.get_height())))
+
         # Update the display
         pygame.display.flip()
 
