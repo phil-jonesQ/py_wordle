@@ -66,9 +66,10 @@ def load_random_word():
 
 def reset_variables():
     # Initialise variables
-    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store
+    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score
     current_row = 0
     current_col = 0
+    score = 90
     check_flag = False
     win = False
     loose = False
@@ -98,7 +99,7 @@ def main():
     font_small = pygame.font.Font(None, 22)
 
     # call the initial resest function
-    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store
+    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score
     reset_variables()
 
 
@@ -114,10 +115,12 @@ def main():
                     if have_we_won(current_row, letter_store, the_word):
                         win = True
                     check_flag = True
+                    score -= 10
                     current_row = current_row + 1
                     current_col = 0
                     if current_row == su.grid_size[0]:
-                        loose = True
+                        if not win:
+                            loose = True
                         current_row = 0
                         current_col = 0
 
@@ -159,8 +162,10 @@ def main():
                 if check_flag:
                     if letter_store[row][col] == the_word[col]:
                         key_char_text = font.render(letter_store[row][col], True, su.green)
-                    if letter_store[row][col] in the_word and not letter_store[row][col] == the_word[col]:
-                        key_char_text = font.render(letter_store[row][col], True, su.yellow)
+                    if not letter_store[row][col] == the_word[col]:
+                            if letter_store[row][col] in the_word:
+                                key_char_text = font.render(letter_store[row][col], True, su.yellow)
+                                
                 # Draw to the screen
                 su.surface.blit(key_char_text, (col * su.cell_size + su.cell_size // 2 - key_char_text.get_width() // 2,
                                                 row * su.cell_size + su.cell_size // 2 - key_char_text.get_height() // 2))
@@ -174,9 +179,11 @@ def main():
                 win_message1 = font_small.render("Unlucky...", True, su.red)
                 intermediate_message2 = font_small.render("You ran out of guesses!",True, su.black)
             intermediate_message3 = font_small.render(f"The word was: {the_word}", True, su.black)
+            intermediate_message4 = font_small.render(f"Your score was: {score}", True, su.black)
             su.surface.blit(win_message1,((su.cell_size * 5 + su.pad), (su.cell_size // 4)))
             su.surface.blit(intermediate_message2, ((su.cell_size * 5 + su.pad), (su.cell_size // 4 + win_message1.get_height())))
             su.surface.blit(intermediate_message3, ((su.cell_size * 5 + su.pad), (su.cell_size // 4 + win_message1.get_height() * 2)))
+            su.surface.blit(intermediate_message4, ((su.cell_size * 5 + su.pad), (su.cell_size // 4 + win_message1.get_height() * 3)))
 
         if game_over:
             game_over_message1 = font_small.render("Game Over!", True, su.red)
