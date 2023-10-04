@@ -14,9 +14,9 @@ su = Setup()
 
 def have_we_won(current_row, word_store, the_word):
     """
-	Check if the word_store matches the_word
-	Returns True if won, False otherwise
-	"""
+    Check if the word_store matches the_word
+    Returns True if won, False otherwise
+    """
     guessed_word_extract = []
 
     # Scan current row and build the word
@@ -34,9 +34,9 @@ def have_we_won(current_row, word_store, the_word):
     
 def is_it_a_word(current_row, word_store, words):
     """
-	Check if the word_store matches the_word
-	Returns True if won, False otherwise
-	"""
+    Check if the word_store matches the_word
+    Returns True if the word is "valid", False otherwise
+    """
     guessed_word_extract = []
 
     # Scan current row and build the word
