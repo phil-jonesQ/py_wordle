@@ -30,6 +30,26 @@ def have_we_won(current_row, word_store, the_word):
     if guessed_word == the_word:
         return True
     else:
+        return 
+    
+def is_it_a_word(current_row, word_store, words):
+    """
+	Check if the word_store matches the_word
+	Returns True if won, False otherwise
+	"""
+    guessed_word_extract = []
+
+    # Scan current row and build the word
+    for index in range(su.grid_size[1]):
+        guessed_word_extract.append(word_store[current_row][index])
+    
+    # Convert to a string
+    guessed_word = "".join(guessed_word_extract)
+
+    # Return the result
+    if guessed_word in words:
+        return True
+    else:
         return False
 
 
@@ -62,11 +82,12 @@ def load_random_word():
         sys.exit(1)
     # Select a random word for the player to guess
     word_to_guess = random.choice(words)
-    return word_to_guess
+    return word_to_guess, words
+
 
 def reset_variables():
     # Initialise variables
-    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score
+    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score, words, not_a_word_flag
     current_row = 0
     current_col = 0
     score = 90
@@ -74,9 +95,11 @@ def reset_variables():
     win = False
     loose = False
     game_over = False
+    not_a_word_flag = False
 
-    # Load word list
-    the_word = load_random_word()
+    # Load the random word and words in
+    the_word, words = load_random_word()
+
 
     # Initialise the letter 
     # Need to make a spare end column for backspace
@@ -99,7 +122,7 @@ def main():
     font_small = pygame.font.Font(None, 22)
 
     # call the initial resest function
-    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score
+    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score, words, not_a_word_flag
     reset_variables()
 
 
@@ -114,6 +137,9 @@ def main():
                 if event.key == pygame.K_RETURN and current_col == su.grid_size[1]:
                     if have_we_won(current_row, letter_store, the_word):
                         win = True
+                    if not is_it_a_word(current_row, letter_store, words):
+                        not_a_word_flag = True
+                        break
                     check_flag = True
                     score -= 10
                     current_row = current_row + 1
@@ -135,6 +161,7 @@ def main():
                     reset_variables()
 
             if event.type == pygame.KEYDOWN and event.key >= 97 and event.key <= 122:
+                not_a_word_flag = False
                 check_flag = False
                 key_char = chr(event.key).upper()
                 letter_store[current_row][current_col] = key_char
@@ -190,6 +217,10 @@ def main():
             game_over_message2 = font_small.render("SPACE to restart", True, su.green)
             su.surface.blit(game_over_message1,((su.cell_size * 5 + su.pad), (su.window_height // 2)))
             su.surface.blit(game_over_message2,((su.cell_size * 5 + su.pad), (su.window_height // 2 + game_over_message2.get_height())))
+        
+        if not_a_word_flag:
+            not_a_word_message = font_small.render("Not a valid word!", True, su.red)
+            su.surface.blit(not_a_word_message,((su.cell_size * 5 + su.pad), (su.window_height // 2)))
 
         # Update the display
         pygame.display.flip()
