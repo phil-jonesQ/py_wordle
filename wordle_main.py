@@ -12,6 +12,39 @@ from setup import Setup
 su = Setup()
 
 
+def transform_row_to_word(current_row, letter_store):
+    """
+    transforms the current_row list into a
+    word string by joining the letter_store items at each index
+    takes current_row and letter_store as args
+    returns a word string, and two word count dicts
+    """
+    guessed_word_extract = []
+
+    # Scan current row and build the word
+    for index in range(su.grid_size[1]):
+        guessed_word_extract.append(letter_store[current_row][index])
+    
+    # Convert to a string
+    guessed_word = "".join(guessed_word_extract)
+
+    return guessed_word
+
+
+def return_letter_count(guessed_word, the_word):
+    the_word_counts = {}
+    guessed_word_counts = {}
+
+    for letter in the_word:
+        the_word_counts[letter] = the_word_counts.get(letter, 0) + 1
+    
+    for letter in guessed_word:
+        guessed_word_counts[letter] = guessed_word_counts.get(letter, 0) + 1
+
+    return the_word_counts, guessed_word_counts
+
+
+
 def have_we_won(current_row, word_store, the_word):
     """
     Check if the word_store matches the_word
@@ -187,11 +220,17 @@ def main():
              for col in range(su.grid_size[1]):
                 key_char_text = font.render(letter_store[row][col], True, su.grey)
                 if check_flag:
+                    guessed_word = transform_row_to_word(current_row - 1, letter_store)
+                    word_count_data = return_letter_count(guessed_word, the_word)
                     if letter_store[row][col] == the_word[col]:
                         key_char_text = font.render(letter_store[row][col], True, su.green)
                     if not letter_store[row][col] == the_word[col]:
-                            if letter_store[row][col] in the_word:
-                                key_char_text = font.render(letter_store[row][col], True, su.yellow)
+                            hit_count_the_word = word_count_data[0].get(letter_store[row][col])
+                            hit_count_guessed_word = word_count_data[1].get(letter_store[row][col])
+                            if letter_store[row][col] in word_count_data[0]:
+                                if hit_count_guessed_word:
+                                    for _ in range(hit_count_guessed_word):
+                                        key_char_text = font.render(letter_store[row][col], True, su.yellow)
                                 
                 # Draw to the screen
                 su.surface.blit(key_char_text, (col * su.cell_size + su.cell_size // 2 - key_char_text.get_width() // 2,
