@@ -14,7 +14,8 @@ class Setup:
 
         # Set up display constants
         self.window_width, self.window_height = 600, 500
-        self.bg_colour = (255, 255, 255)  # White color for the 
+        self.bg_colour = (255, 255, 255)  # White color for 
+        self.white = (255, 255, 255) 
         self.black = (0, 0, 0) # Black color for text
         self.yellow = (255, 255, 0) # Yellow color for partially correct letters
         self.red = (255, 0, 0) # Red color for incorrect letters

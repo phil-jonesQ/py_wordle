@@ -86,19 +86,42 @@ def is_it_a_word(current_row, word_store, words):
         return False
 
 
-def draw_grid(surface):
+def draw_grid(surface, grid_state):
     """
     Draw the grid on the surface
     """
     # Draw the grid
+    print(f"Debug grid state is {grid_state}")
     for row in range(su.grid_size[0]):
         for col in range(su.grid_size[1]):
-            pygame.draw.rect(surface,
+            if grid_state.get((row,col)) == "DEFAULT":
+                pygame.draw.rect(surface,
                             (su.cyan),
                             (col * su.cell_size,
+                                row * su.cell_size,
+                                su.cell_size,
+                                su.cell_size), 2)
+            if grid_state.get((row,col)) == "GREY":
+                pygame.draw.rect(surface,
+                            (su.grey),
+                            (col * su.cell_size,
                              row * su.cell_size,
-                             su.cell_size,
-                             su.cell_size), 2)
+                             su.cell_size - su.pad,
+                             su.cell_size - su.pad))
+            if grid_state.get((row,col)) == "YELLOW":
+                pygame.draw.rect(surface,
+                            (su.yellow),
+                            (col * su.cell_size,
+                             row * su.cell_size,
+                             su.cell_size - su.pad,
+                             su.cell_size - su.pad))
+            if grid_state.get((row,col)) == "GREEN":
+                pygame.draw.rect(surface,
+                            (su.green),
+                            (col * su.cell_size,
+                             row * su.cell_size,
+                             su.cell_size - su.pad,
+                             su.cell_size - su.pad))
 
 
 def load_random_word():
@@ -120,7 +143,8 @@ def load_random_word():
 
 def reset_variables():
     # Initialise variables
-    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score, words, not_a_word_flag
+    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score, words, not_a_word_flag, grid_state
+    grid_state = {}
     current_row = 0
     current_col = 0
     score = 90
@@ -137,6 +161,7 @@ def reset_variables():
     # Initialise the letter 
     # Need to make a spare end column for backspace
     letter_store = [[ '_' for _ in range(su.grid_size[1] + 1)] for _ in range(su.grid_size[0])]
+    grid_state = { (row,col):'DEFAULT' for row in range(su.grid_size[0]) for col in range(su.grid_size[1])}
 
     # Initialise the guessed word
     print("Debug here is the word " + the_word)
@@ -155,7 +180,7 @@ def main():
     font_small = pygame.font.Font(None, 22)
 
     # call the initial resest function
-    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score, words, not_a_word_flag
+    global current_row, current_col, check_flag, win, loose, game_over, the_word, letter_store, score, words, not_a_word_flag, grid_state
     reset_variables()
 
 
@@ -213,28 +238,30 @@ def main():
         #
 
         # Draw the grid
-        draw_grid(su.surface)
+        print("Debug here is the word " + the_word)
+        draw_grid(su.surface, grid_state)
 
         # Populate the letters in the grid
         for row in range(su.grid_size[0]):
              for col in range(su.grid_size[1]):
-                key_char_text = font.render(letter_store[row][col], True, su.grey)
-                if check_flag:
-                    guessed_word = transform_row_to_word(current_row - 1, letter_store)
-                    word_count_data = return_letter_count(guessed_word, the_word)
-                    if letter_store[row][col] == the_word[col]:
-                        key_char_text = font.render(letter_store[row][col], True, su.green)
-                    if not letter_store[row][col] == the_word[col]:
-                            hit_count_the_word = word_count_data[0].get(letter_store[row][col])
-                            hit_count_guessed_word = word_count_data[1].get(letter_store[row][col])
-                            if letter_store[row][col] in word_count_data[0]:
-                                if hit_count_guessed_word:
-                                    for _ in range(hit_count_guessed_word):
-                                        key_char_text = font.render(letter_store[row][col], True, su.yellow)
-                                
-                # Draw to the screen
+                guessed_word = transform_row_to_word(current_row, letter_store)
+                word_count_data = return_letter_count(guessed_word, the_word)
+                key_char_text = font.render(letter_store[row][col], True, su.black)
                 su.surface.blit(key_char_text, (col * su.cell_size + su.cell_size // 2 - key_char_text.get_width() // 2,
                                                 row * su.cell_size + su.cell_size // 2 - key_char_text.get_height() // 2))
+                
+                if letter_store[row][col] == the_word[col]:
+                    grid_state[(current_row, col)] = "GREEN"
+                    key_char_text = font.render(letter_store[row][col], True, su.black)
+                    su.surface.blit(key_char_text, (col * su.cell_size + su.cell_size // 2 - key_char_text.get_width() // 2,
+                                                row * su.cell_size + su.cell_size // 2 - key_char_text.get_height() // 2))
+                if not letter_store[row][col] == the_word[col] and letter_store[row][col] in the_word:
+                        grid_state[(current_row, col)] = "YELLOW"
+                        key_char_text = font.render(letter_store[row][col], True, su.black)
+                        su.surface.blit(key_char_text, (col * su.cell_size + su.cell_size // 2 - key_char_text.get_width() // 2,
+                                                    row * su.cell_size + su.cell_size // 2 - key_char_text.get_height() // 2))
+
+        #check_flag = False
         # Draw ui messages  
         if win or loose:
             game_over = True
