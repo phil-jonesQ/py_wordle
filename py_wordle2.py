@@ -67,13 +67,12 @@ class Wordle:
         # Initialise the guessed word
         print("Debug here is the word " + self.the_word)
 
-
     def draw_grid(self):
         """
         Draw the grid on the surface
         """
         # Draw the grid
-        #print(f"Debug grid state is {self.grid_state}")
+        # print(f"Debug grid state is {self.grid_state}")
         for row in range(gc.GRID_SIZE.value[0]):
             for col in range(gc.GRID_SIZE.value[1]):
                 # Create a cell object
@@ -89,11 +88,15 @@ class Wordle:
         cell = GridCell(row, col)
         cell.fill_cell(colour)
 
-
+    def draw_grid_char(self, row, col, letter_store):
+        """
+        Draws the chars to the screen
+        """
+        cell_update = GridCell(row, col)
+        cell_update.print_char(letter_store[row][col])
 
     def populate_row(self):
         pass
-
 
     def check_row(self):
         pass
@@ -103,24 +106,38 @@ def main():
     """
     Main game loop function
     """
-    # Initialise Pygame
-    pygame.init()
-    pygame.display.set_caption(gc.APP_NAME.value)
-
-    # Initialise the font
-    font = pygame.font.Font(None, 36)
-    font_small = pygame.font.Font(None, 22)
-
     # Create a Game Instance
     wordle = Wordle()
+    current_col = wordle.game_state.get('current_col')
+    current_row = wordle.game_state.get('current_row')
+    letter_store = wordle.letter_store
 
     # Main game loop
     while True:
         # Handle events
         for event in pygame.event.get():
+            # Handle Game Quit
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            # Handle key input
+            if event.type == pygame.KEYDOWN and event.key >= 97 and event.key <= 122:
+                not_a_word_flag = False
+                check_flag = False
+                key_char = chr(event.key).upper()
+                letter_store[current_row][current_col] = key_char
+
+                # Increment the col
+                current_col += 1
+                if current_col >= gc.GRID_SIZE.value[1]:
+                    current_col = gc.GRID_SIZE.value[1]#
+            # Handle back space
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_BACKSPACE:
+                        letter_store[current_row][current_col - 1] = '_'
+                        current_col = current_col - 1
+                        if current_col <= 0:
+                            current_col = 0
 
         # Clear the screen with background color
         gc.SURFACE.value.fill(gc.COLOURS.value["BG_COLOUR"])
@@ -129,7 +146,20 @@ def main():
         wordle.draw_grid()
 
         # Fill a grid square
-        wordle.fill_grid_cell(2, 3, "GREEN")
+        wordle.fill_grid_cell(0, 4, "GREEN")
+
+        # Fill a grid square
+        wordle.fill_grid_cell(0, 2, "YELLOW")
+
+        # Fill a grid square
+        wordle.fill_grid_cell(0,3, "GREY")
+
+        # Draw char to Grid
+        # Populate the letters in the grid
+        for row in range(gc.GRID_SIZE.value[0]):
+             for col in range(gc.GRID_SIZE.value[1]):
+                 wordle.draw_grid_char(row, col, letter_store)
+
 
         # Update the display
         pygame.display.flip()
