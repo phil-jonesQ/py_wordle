@@ -60,7 +60,7 @@ class Wordle:
         # Need to make a spare end column for backspace
         self.letter_store = [['_' for _ in range(gc.GRID_SIZE.value[1] + 1)]
                              for _ in range(gc.GRID_SIZE.value[0])]
-        self.grid_state = {(row, col): 'GREY'
+        self.grid_state = {(row, col): 'DEFAULT'
                            for row in range(gc.GRID_SIZE.value[0])
                            for col in range(gc.GRID_SIZE.value[1])}
 
@@ -73,13 +73,22 @@ class Wordle:
         Draw the grid on the surface
         """
         # Draw the grid
-        print(f"Debug grid state is {self.grid_state}")
+        #print(f"Debug grid state is {self.grid_state}")
         for row in range(gc.GRID_SIZE.value[0]):
             for col in range(gc.GRID_SIZE.value[1]):
+                # Create a cell object
                 cell = GridCell(row, col)
                 cell.draw_cell("CYAN")
                 if self.grid_state.get((row, col)) == "GREY":
                     cell.fill_cell("GREY")
+
+    def fill_grid_cell(self, row, col, colour):
+        """
+        Fills the cell to desired colour
+        """
+        cell = GridCell(row, col)
+        cell.fill_cell(colour)
+
 
 
     def populate_row(self):
@@ -115,7 +124,12 @@ def main():
 
         # Clear the screen with background color
         gc.SURFACE.value.fill(gc.COLOURS.value["BG_COLOUR"])
+        
+        # Draw the grid
         wordle.draw_grid()
+
+        # Fill a grid square
+        wordle.fill_grid_cell(2, 3, "GREEN")
 
         # Update the display
         pygame.display.flip()
