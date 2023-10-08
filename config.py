@@ -34,7 +34,7 @@ class GameConstants(Enum):
     # Create the window
     SURFACE = pygame.display.set_mode(
         (WINDOW_WIDTH, WINDOW_HEIGHT))
-    
+
     # Initialise Pygame
     pygame.init()
     pygame.display.set_caption(APP_NAME)

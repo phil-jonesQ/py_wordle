@@ -24,6 +24,7 @@ def load_random_word():
         sys.exit(1)
     # Select a random word for the player to guess
     word_to_guess = random.choice(words)
+    # word_to_guess = "MAGMA"
     return word_to_guess, words
 
 
@@ -95,45 +96,26 @@ class Wordle:
         cell_update = GridCell(row, col)
         cell_update.print_char(self.letter_store[row][col])
 
-    def update_grid_state(self, current_row):
-        """
-        Updates the grid state
-        """
-        letter_groups = self.process_results(current_row)
-        current_guess = self.decode_guess(current_row)
-        print(letter_groups)
-        for index in range(gc.GRID_SIZE.value[1]):
-            # Green or Grey
-            for letter in letter_groups[0]:
-                if current_guess[index] == self.the_word[index]:
-                    self.grid_state[(current_row, index)] = "GREEN"
-                else:
-                    self.grid_state[(current_row, index)] = "GREY"
-            # Yellow
-            for letter in letter_groups[1]:
-                if letter == current_guess[index]:
-                    self.grid_state[(current_row, index)] = "YELLOW"
-            # Grey
-            for letter in letter_groups[2]:
-                if letter == current_guess[index]:
-                    self.grid_state[(current_row, index)] = "GREY"
-
     def process_results(self, current_row):
         """
         Use sets to group letters
         """
         current_guess = self.decode_guess(current_row)
-        correct_letters = {
-            letter for letter, correct in
-            zip(current_guess, self.the_word) if letter == correct
-        }
-        misplaced_letters = set(current_guess) &\
-            set(self.the_word) - correct_letters
-        wrong_letters = set(current_guess) - set(self.the_word)
-        green_group = sorted(correct_letters)
-        yellow_group = sorted(misplaced_letters)
-        grey_group = sorted(wrong_letters)
-        return green_group, yellow_group, grey_group
+        for index in range(gc.GRID_SIZE.value[1]):
+            if current_guess[index] == self.the_word[index]:
+                self.grid_state[(current_row, index)] = "GREEN"
+            elif current_guess[index] in self.the_word:
+                for i in range(gc.GRID_SIZE.value[1]):
+                    if not current_guess[i] == self.the_word[i]:
+                        if self.the_word.count(current_guess[i]) != 0:
+                            # print(f"The {i} letter {current_guess[i]} occurs {self.the_word.count(current_guess[i])}")
+                            for _ in range(self.the_word.count(current_guess[i])):
+                                # print(f"Updating the grid {(current_row, index)}")
+                                self.grid_state[(current_row, index)] = "YELLOW"
+                    else:
+                        continue
+            else:
+                self.grid_state[(current_row, index)] = "GREY"
 
     def decode_guess(self, current_row):
         """
@@ -141,7 +123,6 @@ class Wordle:
         guessed word
         """
         guessed_word_extract = []
-
         # Scan current row and build the word
         for index in range(gc.GRID_SIZE.value[1]):
             guessed_word_extract.append(self.letter_store[current_row][index])
@@ -163,6 +144,21 @@ class Wordle:
             return True
         else:
             return
+
+    def is_it_a_word(self, current_row):
+        """
+        Check if the word_store matches the_word
+        Returns True if the word is "valid", False otherwise
+        """
+        current_guess = self.decode_guess(current_row)
+        # Convert to a string
+        guessed_word = "".join(current_guess)
+
+        # Return the result
+        if guessed_word in self.words:
+            return True
+        else:
+            return False
 
 
 def main():
@@ -203,15 +199,16 @@ def main():
                         current_col = 0
                 if event.key == pygame.K_RETURN\
                         and not wordle.game_data['game_over']:
-                    if current_col == gc.GRID_SIZE.value[1]:
-                        wordle.update_grid_state(current_row)
-                        if wordle.have_we_won(current_row):
-                            print("You got it!!!")
-                        current_row = current_row + 1
-                        current_col = 0
-                        if current_row == gc.GRID_SIZE.value[0]:
-                            wordle.game_data['loose'] = True
-                            wordle.game_data['game_over'] = True
+                    if wordle.is_it_a_word(current_row):
+                        if current_col == gc.GRID_SIZE.value[1]:
+                            wordle.process_results(current_row)
+                            if wordle.have_we_won(current_row):
+                                print("You got it!!!")
+                            current_row = current_row + 1
+                            current_col = 0
+                            if current_row == gc.GRID_SIZE.value[0]:
+                                wordle.game_data['loose'] = True
+                                wordle.game_data['game_over'] = True
                 if event.key == pygame.K_SPACE\
                         and wordle.game_data['game_over']:
                     wordle = Wordle()
