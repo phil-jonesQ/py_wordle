@@ -88,18 +88,81 @@ class Wordle:
         cell = GridCell(row, col)
         cell.fill_cell(colour)
 
-    def draw_grid_char(self, row, col, letter_store):
+    def draw_grid_char(self, row, col):
         """
         Draws the chars to the screen
         """
         cell_update = GridCell(row, col)
-        cell_update.print_char(letter_store[row][col])
+        cell_update.print_char(self.letter_store[row][col])
 
-    def populate_row(self):
-        pass
+    def update_grid_state(self, current_row):
+        """
+        Updates the grid state
+        """
+        letter_groups = self.process_results(current_row)
+        current_guess = self.decode_guess(current_row)
+        print(letter_groups)
+        for index in range(gc.GRID_SIZE.value[1]):
+            # Green or Grey
+            for letter in letter_groups[0]:
+                if current_guess[index] == self.the_word[index]:
+                    self.grid_state[(current_row, index)] = "GREEN"
+                else:
+                    self.grid_state[(current_row, index)] = "GREY"
+            # Yellow
+            for letter in letter_groups[1]:
+                if letter == current_guess[index]:
+                    self.grid_state[(current_row, index)] = "YELLOW"
+            # Grey
+            for letter in letter_groups[2]:
+                if letter == current_guess[index]:
+                    self.grid_state[(current_row, index)] = "GREY"
 
-    def check_row(self):
-        pass
+    def process_results(self, current_row):
+        """
+        Use sets to group letters
+        """
+        current_guess = self.decode_guess(current_row)
+        correct_letters = {
+            letter for letter, correct in
+            zip(current_guess, self.the_word) if letter == correct
+        }
+        misplaced_letters = set(current_guess) &\
+            set(self.the_word) - correct_letters
+        wrong_letters = set(current_guess) - set(self.the_word)
+        green_group = sorted(correct_letters)
+        yellow_group = sorted(misplaced_letters)
+        grey_group = sorted(wrong_letters)
+        return green_group, yellow_group, grey_group
+
+    def decode_guess(self, current_row):
+        """
+        Examines the current row and decodes the
+        guessed word
+        """
+        guessed_word_extract = []
+
+        # Scan current row and build the word
+        for index in range(gc.GRID_SIZE.value[1]):
+            guessed_word_extract.append(self.letter_store[current_row][index])
+
+        # Convert to a string
+        guessed_word = "".join(guessed_word_extract)
+        return guessed_word
+
+    def have_we_won(self, current_row):
+        """
+        Check if the word_store matches the_word
+        Returns True if won, False otherwise
+        """
+        check_word = self.decode_guess(current_row)
+        # Return the result
+        if check_word == self.the_word:
+            self.game_data['win'] = True
+            self.game_data['game_over'] = True
+            return True
+        else:
+            return
 
 
 def main():
@@ -120,53 +183,65 @@ def main():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            # Handle key input
-            if event.type == pygame.KEYDOWN and event.key >= 97 and event.key <= 122:
-                not_a_word_flag = False
-                check_flag = False
-                key_char = chr(event.key).upper()
-                letter_store[current_row][current_col] = key_char
 
-                # Increment the col
-                current_col += 1
-                if current_col >= gc.GRID_SIZE.value[1]:
-                    current_col = gc.GRID_SIZE.value[1]#
-            # Handle back space
+            # Handle Inputs
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_BACKSPACE:
-                        letter_store[current_row][current_col - 1] = '_'
-                        current_col = current_col - 1
-                        if current_col <= 0:
-                            current_col = 0
+                # Handle key input
+                if event.key >= 97 and event.key <= 122\
+                        and not wordle.game_data['game_over']:
+                    key_char = chr(event.key).upper()
+                    letter_store[current_row][current_col] = key_char
+                    # Increment the col
+                    current_col += 1
+                    if current_col >= gc.GRID_SIZE.value[1]:
+                        current_col = gc.GRID_SIZE.value[1]
+                if event.key == pygame.K_BACKSPACE\
+                        and not wordle.game_data['game_over']:
+                    letter_store[current_row][current_col - 1] = '_'
+                    current_col = current_col - 1
+                    if current_col <= 0:
+                        current_col = 0
+                if event.key == pygame.K_RETURN\
+                        and not wordle.game_data['game_over']:
+                    if current_col == gc.GRID_SIZE.value[1]:
+                        wordle.update_grid_state(current_row)
+                        if wordle.have_we_won(current_row):
+                            print("You got it!!!")
+                        current_row = current_row + 1
+                        current_col = 0
+                        if current_row == gc.GRID_SIZE.value[0]:
+                            wordle.game_data['loose'] = True
+                            wordle.game_data['game_over'] = True
+                if event.key == pygame.K_SPACE\
+                        and wordle.game_data['game_over']:
+                    wordle = Wordle()
+                    current_col = wordle.game_state.get('current_col')
+                    current_row = wordle.game_state.get('current_row')
+                    letter_store = wordle.letter_store
 
         # Clear the screen with background color
         gc.SURFACE.value.fill(gc.COLOURS.value["BG_COLOUR"])
-        
+
         # Draw the grid
         wordle.draw_grid()
 
-        # Fill a grid square
-        wordle.fill_grid_cell(0, 4, "GREEN")
-
-        # Fill a grid square
-        wordle.fill_grid_cell(0, 2, "YELLOW")
-
-        # Fill a grid square
-        wordle.fill_grid_cell(0,3, "GREY")
+        # Populate the cells depending on grid state
+        for row in range(gc.GRID_SIZE.value[0]):
+            for col in range(gc.GRID_SIZE.value[1]):
+                wordle.fill_grid_cell(row, col,
+                                      wordle.grid_state.get((row, col)))
 
         # Draw char to Grid
         # Populate the letters in the grid
         for row in range(gc.GRID_SIZE.value[0]):
-             for col in range(gc.GRID_SIZE.value[1]):
-                 wordle.draw_grid_char(row, col, letter_store)
-
+            for col in range(gc.GRID_SIZE.value[1]):
+                wordle.draw_grid_char(row, col)
 
         # Update the display
         pygame.display.flip()
 
         # Limit frames per second (FPS)
         pygame.time.Clock().tick(gc.FPS.value)  # Limit to 60 frames per second
-
 
 
 if __name__ == "__main__":

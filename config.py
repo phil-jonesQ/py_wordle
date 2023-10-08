@@ -17,11 +17,12 @@ class GameConstants(Enum):
     COLOURS = {
         'BG_COLOUR': (255, 255, 255),
         'WHITE': (255, 255, 255),
+        'DEFAULT': (245, 245, 245),
         'BLACK': (0, 0, 0,),
         'YELLOW': (255, 255, 0),
         'RED': (255, 0, 0),
         'GREEN': (0, 255, 0),
-        'GREY': (222, 222, 222),
+        'GREY': (111, 111, 111),
         'CYAN': (0, 100, 100)
         }
     GRID_SIZE = (6, 5)  # ROWS, COLS
