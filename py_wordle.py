@@ -24,7 +24,7 @@ def load_random_word():
         sys.exit(1)
     # Select a random word for the player to guess
     word_to_guess = random.choice(words)
-    # word_to_guess = "MAGMA"
+    #word_to_guess = "NOISE"
     return word_to_guess, words
 
 
@@ -79,8 +79,6 @@ class Wordle:
                 # Create a cell object
                 cell = GridCell(row, col)
                 cell.draw_cell("CYAN")
-                if self.grid_state.get((row, col)) == "GREY":
-                    cell.fill_cell("GREY")
 
     def fill_grid_cell(self, row, col, colour):
         """
@@ -98,24 +96,68 @@ class Wordle:
 
     def process_results(self, current_row):
         """
-        Use sets to group letters
+        Compare the guessed word against
+        the_word and determine grid state
         """
         current_guess = self.decode_guess(current_row)
         for index in range(gc.GRID_SIZE.value[1]):
-            if current_guess[index] == self.the_word[index]:
-                self.grid_state[(current_row, index)] = "GREEN"
-            elif current_guess[index] in self.the_word:
-                for i in range(gc.GRID_SIZE.value[1]):
-                    if not current_guess[i] == self.the_word[i]:
-                        if self.the_word.count(current_guess[i]) != 0:
-                            # print(f"The {i} letter {current_guess[i]} occurs {self.the_word.count(current_guess[i])}")
-                            for _ in range(self.the_word.count(current_guess[i])):
-                                # print(f"Updating the grid {(current_row, index)}")
-                                self.grid_state[(current_row, index)] = "YELLOW"
+            if current_guess[index] in self.the_word:
+                misplaced_letters = self.get_misplaced_letters(current_row)
+                print(f"Misplaced letters are {misplaced_letters}")
+                for i, letter in enumerate(misplaced_letters):
+                    if letter == '_':
+                        print(f"{i} is grey!")
+                        self.grid_state[(current_row, i)] = "GREY"
                     else:
-                        continue
+                        print(f"{i} is yellow!")
+                        self.grid_state[(current_row, i)] = "YELLOW"
             else:
                 self.grid_state[(current_row, index)] = "GREY"
+
+        for index in range(gc.GRID_SIZE.value[1]):
+            if current_guess[index] == self.the_word[index]:
+                print(f"{index} is green!")
+                self.grid_state[(current_row, index)] = "GREEN"
+
+    def get_misplaced_letters(self, current_row):
+        """
+        Helper method to solve the somewhat complex
+        algroithm of getting misplaced letters
+        takes current row
+        returns a list of misplaced letters for the UI
+        consumption
+        """
+
+        # Get the current guess
+        current_guess = self.decode_guess(current_row)
+
+        # Initialise the list
+        misplaced_letters_list = []
+
+        # Determine correct letters
+        correct_letters = {
+        letter for letter,
+          correct in zip(current_guess, self.the_word) if letter == correct
+          }
+        
+        # Determine misplaced letters
+        misplaced_letters = set(current_guess) & set(self.the_word) - correct_letters
+
+        # Iterate through the current guess and
+        # make a UI friendly list of misplaced letters
+        # E.G. ['E', '_', '_', '_', 'R'] when
+        # Word is CREWS
+        # Guess is ELDER
+        for index, letter_m in enumerate(current_guess):
+            # Make initial append
+            misplaced_letters_list.append('_')
+            # Iterrate through the misplaced set
+            for letter_m in misplaced_letters.copy():
+                if letter_m == current_guess[index]:
+                    # print(f"Yes {letter_m} matched so adding to misplaced list")
+                    misplaced_letters_list[index] = letter_m
+                    misplaced_letters.remove(letter_m)
+        return misplaced_letters_list
 
     def decode_guess(self, current_row):
         """
