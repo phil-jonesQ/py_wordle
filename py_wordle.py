@@ -105,7 +105,6 @@ class Wordle:
         for index in range(gc.GRID_SIZE.value[1]):
             if current_guess[index] in self.the_word:
                 misplaced_letters = self.get_misplaced_letters(current_row)
-                print(f"Misplaced letters are {misplaced_letters}")
                 for i, letter in enumerate(misplaced_letters):
                     if letter == '_':
                         self.grid_state[(current_row, i)] = "GREY"
@@ -117,7 +116,6 @@ class Wordle:
         # Now handle the green cells
         for index in range(gc.GRID_SIZE.value[1]):
             if current_guess[index] == self.the_word[index]:
-                print(f"{index} is green!")
                 self.grid_state[(current_row, index)] = "GREEN"
 
     def get_misplaced_letters(self, current_row):
