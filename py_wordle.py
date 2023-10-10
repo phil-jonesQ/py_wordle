@@ -8,6 +8,7 @@ import sys
 import pygame
 from config import GameConstants as gc
 from grid_cell import GridCell
+from display import Display
 
 
 def load_random_word():
@@ -24,7 +25,7 @@ def load_random_word():
         sys.exit(1)
     # Select a random word for the player to guess
     word_to_guess = random.choice(words)
-    #word_to_guess = "NOISE"
+    # word_to_guess = "FLOSS"
     return word_to_guess, words
 
 
@@ -100,63 +101,50 @@ class Wordle:
         the_word and determine grid state
         """
         current_guess = self.decode_guess(current_row)
+        translate_guess = self.translate_guess(current_guess)
 
         # Handle yellow and grey cells firs
         for index in range(gc.GRID_SIZE.value[1]):
-            if current_guess[index] in self.the_word:
-                misplaced_letters = self.get_misplaced_letters(current_row)
-                for i, letter in enumerate(misplaced_letters):
-                    if letter == '_':
-                        self.grid_state[(current_row, i)] = "GREY"
-                    else:
-                        self.grid_state[(current_row, i)] = "YELLOW"
+            if translate_guess[index] == "Y":
+                self.grid_state[(current_row, index)] = "YELLOW"
+            elif translate_guess[index] == "G":
+                self.grid_state[(current_row, index)] = "GREEN"
             else:
                 self.grid_state[(current_row, index)] = "GREY"
 
-        # Now handle the green cells
-        for index in range(gc.GRID_SIZE.value[1]):
-            if current_guess[index] == self.the_word[index]:
-                self.grid_state[(current_row, index)] = "GREEN"
-
-    def get_misplaced_letters(self, current_row):
+    def translate_guess(self, guess):
         """
-        Helper method to solve the somewhat complex
-        algroithm of getting misplaced letters
-        takes current row
-        returns a list of misplaced letters for the UI
-        consumption
+        Evaluates the guess and translates the guess
+        to:
+        'G' - char. is correctly placed
+        'Y' - char. is in secret word, but wrong place
+        '_' - char. is not in the secret word
+        based on code by Iulian Intorsureanu
         """
+        # Initialise result
+        result = [' '] * 5
 
-        # Get the current guess
-        current_guess = self.decode_guess(current_row)
+        # Make a copy of the word and guess as lists
+        the_word_copy = list(self.the_word)
+        the_guess_copy = list(guess)
 
-        # Initialise the list
-        misplaced_letters_list = []
-
-        # Determine correct letters
-        correct_letters = {
-        letter for letter,
-          correct in zip(current_guess, self.the_word) if letter == correct
-          }
+        # Iterate through the guess and mark the correct letters
+        for index, char in enumerate(guess):
+            if char == self.the_word[index]:
+                result[index] = 'G'
+                the_guess_copy[index] = 'O' # Marked as checked
+                the_word_copy.remove(char)
         
-        # Determine misplaced letters
-        misplaced_letters = set(current_guess) & set(self.the_word) - correct_letters
-
-        # Iterate through the current guess and
-        # make a UI friendly list of misplaced letters
-        # E.G. ['E', '_', '_', '_', 'R'] when
-        # Word is CREWS
-        # Guess is ELDER
-        for index, letter_m in enumerate(current_guess):
-            # Make initial append
-            misplaced_letters_list.append('_')
-            # Iterrate through the misplaced set
-            for letter_m in misplaced_letters.copy():
-                if letter_m == current_guess[index]:
-                    # print(f"Yes {letter_m} matched so adding to misplaced list")
-                    misplaced_letters_list[index] = letter_m
-                    misplaced_letters.remove(letter_m)
-        return misplaced_letters_list
+        # Iterate through the word and mark the misplaced letters
+        for index, char in enumerate(the_guess_copy):
+            if char != 'O':
+                if char in the_word_copy:
+                    result[index] = 'Y'
+                    the_guess_copy[index] = 'O' # Marked as checked
+                    the_word_copy.remove(char)
+                else:
+                    result[index] = '_'
+        return result
 
     def decode_guess(self, current_row):
         """
@@ -242,11 +230,14 @@ def main():
                         and not wordle.game_data['game_over']:
                     if wordle.is_it_a_word(current_row):
                         if current_col == gc.GRID_SIZE.value[1]:
+                            # Check the submission
                             wordle.process_results(current_row)
-                            if wordle.have_we_won(current_row):
-                                print("You got it!!!")
+                            # Check if we have won
+                            wordle.have_we_won(current_row)
+                            # Increment the row and reset the col
                             current_row = current_row + 1
                             current_col = 0
+                            # Check if we have lost
                             if current_row == gc.GRID_SIZE.value[0]:
                                 wordle.game_data['loose'] = True
                                 wordle.game_data['game_over'] = True
@@ -262,6 +253,15 @@ def main():
 
         # Draw the grid
         wordle.draw_grid()
+
+        # Draw data to screen
+        display = Display(gc.CELL_SIZE.value * 6,
+                         gc.CELL_SIZE.value // 4,
+                         gc.COLOURS.value["RED"],
+                         "medium",
+                         "WORDLE!",
+                         True)
+        display.draw()
 
         # Populate the cells depending on grid state
         for row in range(gc.GRID_SIZE.value[0]):
