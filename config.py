@@ -10,10 +10,10 @@ class GameConstants(Enum):
     Define constants
     """
     # Set up game constants
-    APP_NAME = "Wordle"
+    APP_NAME = "WORDLE"
 
     # Set up display constants
-    WINDOW_WIDTH, WINDOW_HEIGHT = 600, 500
+    WINDOW_WIDTH, WINDOW_HEIGHT = 400, 700
     COLOURS = {
         'BG_COLOUR': (255, 255, 255),
         'WHITE': (255, 255, 255),
@@ -23,7 +23,8 @@ class GameConstants(Enum):
         'RED': (255, 0, 0),
         'GREEN': (0, 255, 0),
         'GREY': (111, 111, 111),
-        'CYAN': (0, 100, 100)
+        'CYAN': (0, 100, 100),
+        'UI': (75, 22, 22)
         }
     GRID_SIZE = (6, 5)  # ROWS, COLS
     CELL_SIZE = 80

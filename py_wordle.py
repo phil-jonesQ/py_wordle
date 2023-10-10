@@ -192,6 +192,23 @@ class Wordle:
         else:
             return False
 
+    def draw_title(self):
+        ui_area = GridCell(10, 10)
+        ui_area.fill_ui_area("UI")
+        for i, letter in enumerate(list(gc.APP_NAME.value)):
+            if i % 2 == 0:
+                colour = "GREEN"
+            elif i == 3:
+                colour = "YELLOW"
+            else:
+                colour = "GREY"
+            display = Display((gc.CELL_SIZE.value * 1.6) + i * 25,
+                            gc.WINDOW_HEIGHT.value // 1.43,
+                            gc.COLOURS.value[f"{colour}"],
+                            "large",
+                            letter,
+                            True)
+            display.draw()
 
 def main():
     """
@@ -257,14 +274,8 @@ def main():
         # Draw the grid
         wordle.draw_grid()
 
-        # Draw data to screen
-        display = Display(gc.CELL_SIZE.value * 6,
-                         gc.CELL_SIZE.value // 4,
-                         gc.COLOURS.value["RED"],
-                         "medium",
-                         "WORDLE!",
-                         True)
-        display.draw()
+        # Draw Title
+        wordle.draw_title()
 
         # Populate the cells depending on grid state
         for row in range(gc.GRID_SIZE.value[0]):
