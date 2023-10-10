@@ -25,7 +25,8 @@ def load_random_word():
         sys.exit(1)
     # Select a random word for the player to guess
     word_to_guess = random.choice(words)
-    # word_to_guess = "FLOSS"
+    # word_to_guess = "ALLOW" # Input "LOLLY" to test
+    # Result should be Y Y G _ _ _
     return word_to_guess, words
 
 
@@ -102,6 +103,7 @@ class Wordle:
         """
         current_guess = self.decode_guess(current_row)
         translate_guess = self.translate_guess(current_guess)
+        print(translate_guess)
 
         # Handle yellow and grey cells firs
         for index in range(gc.GRID_SIZE.value[1]):
@@ -117,8 +119,9 @@ class Wordle:
         Evaluates the guess and translates the guess
         to:
         'G' - char. is correctly placed
-        'Y' - char. is in secret word, but wrong place
+        'Y' - char. is misplaced
         '_' - char. is not in the secret word
+        '0' - char. char has been checked
         based on code by Iulian Intorsureanu
         """
         # Initialise result
@@ -132,15 +135,15 @@ class Wordle:
         for index, char in enumerate(guess):
             if char == self.the_word[index]:
                 result[index] = 'G'
-                the_guess_copy[index] = 'O' # Marked as checked
+                the_guess_copy[index] = '0' # Marked as checked
                 the_word_copy.remove(char)
         
         # Iterate through the word and mark the misplaced letters
         for index, char in enumerate(the_guess_copy):
-            if char != 'O':
+            if char != '0':
                 if char in the_word_copy:
                     result[index] = 'Y'
-                    the_guess_copy[index] = 'O' # Marked as checked
+                    the_guess_copy[index] = '0' # Marked as checked
                     the_word_copy.remove(char)
                 else:
                     result[index] = '_'

@@ -1769,6 +1769,7 @@ loges
 logic
 login
 loins
+lolly
 longs
 looks
 looms
