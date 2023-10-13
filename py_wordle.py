@@ -52,7 +52,7 @@ class Wordle:
         self.game_data = {
             'score': gc.START_SCORE.value,
             'win': False,
-            'loose': False,
+            'lose': False,
             'game_over': False
         }
 
@@ -69,6 +69,17 @@ class Wordle:
 
         # Initialise the guessed word
         print("Debug here is the word " + self.the_word)
+
+    def update_score(self):
+        """
+        Decrement the score
+        """
+        if self.game_data['lose']:
+            self.game_data['score'] = 0
+        elif self.game_data['win']:
+            return
+        else:
+            self.game_data['score'] -= 10
 
     def draw_grid(self):
         """
@@ -103,7 +114,6 @@ class Wordle:
         """
         current_guess = self.decode_guess(current_row)
         translate_guess = self.translate_guess(current_guess)
-        print(translate_guess)
 
         # Handle yellow and grey cells firs
         for index in range(gc.GRID_SIZE.value[1]):
@@ -135,15 +145,15 @@ class Wordle:
         for index, char in enumerate(guess):
             if char == self.the_word[index]:
                 result[index] = 'G'
-                the_guess_copy[index] = '0' # Marked as checked
+                the_guess_copy[index] = '0'  # Marked as checked
                 the_word_copy.remove(char)
-        
+
         # Iterate through the word and mark the misplaced letters
         for index, char in enumerate(the_guess_copy):
             if char != '0':
                 if char in the_word_copy:
                     result[index] = 'Y'
-                    the_guess_copy[index] = '0' # Marked as checked
+                    the_guess_copy[index] = '0'  # Marked as checked
                     the_word_copy.remove(char)
                 else:
                     result[index] = '_'
@@ -173,9 +183,7 @@ class Wordle:
         if check_word == self.the_word:
             self.game_data['win'] = True
             self.game_data['game_over'] = True
-            return True
-        else:
-            return
+        return True
 
     def is_it_a_word(self, current_row):
         """
@@ -189,26 +197,53 @@ class Wordle:
         # Return the result
         if guessed_word in self.words:
             return True
-        else:
-            return False
+        return False
 
     def draw_title(self):
+        """
+        Draw the title to the screen
+        Also, if we have lost, reveal the word
+        """
         ui_area = GridCell(10, 10)
         ui_area.fill_ui_area("UI")
-        for i, letter in enumerate(list(gc.APP_NAME.value)):
+        string_to_render = gc.APP_NAME.value
+        if self.game_data.get('lose'):
+            string_to_render = self.the_word
+        if self.game_data.get('win'):
+            string_to_render = "YOU WON!"
+        for i, letter in enumerate(list(string_to_render)):
             if i % 2 == 0:
                 colour = "GREEN"
-            elif i == 3:
-                colour = "YELLOW"
-            else:
+            elif i == list(string_to_render)[-1]:
                 colour = "GREY"
+            else:
+                colour = "YELLOW"
             display = Display((gc.CELL_SIZE.value * 1.6) + i * 25,
-                            gc.WINDOW_HEIGHT.value // 1.43,
-                            gc.COLOURS.value[f"{colour}"],
-                            "large",
-                            letter,
-                            True)
+                              gc.WINDOW_HEIGHT.value // 1.43,
+                              gc.COLOURS.value[f"{colour}"],
+                              "large",
+                              letter,
+                              True)
             display.draw()
+        if self.game_data.get('game_over'):
+            go_message = "GAME OVER - SPACE TO PLAY AGAIN"
+            score_message = f"Score: {self.game_data.get('score')}"
+            display = Display((gc.WINDOW_WIDTH.value // 6),
+                              gc.WINDOW_HEIGHT.value // 1.2,
+                              gc.COLOURS.value["WHITE"],
+                              "large",
+                              go_message,
+                              False)
+            display.draw()
+            self.update_score()
+            display = Display((gc.WINDOW_WIDTH.value // 6),
+                              gc.WINDOW_HEIGHT.value // 1.1,
+                              gc.COLOURS.value["WHITE"],
+                              "large",
+                              score_message,
+                              False)
+            display.draw()
+
 
 def main():
     """
@@ -244,23 +279,26 @@ def main():
                         and not wordle.game_data['game_over']:
                     letter_store[current_row][current_col - 1] = '_'
                     current_col = current_col - 1
-                    if current_col <= 0:
-                        current_col = 0
+                    current_col = max(current_col, 0)
                 if event.key == pygame.K_RETURN\
                         and not wordle.game_data['game_over']:
-                    if wordle.is_it_a_word(current_row):
-                        if current_col == gc.GRID_SIZE.value[1]:
-                            # Check the submission
-                            wordle.process_results(current_row)
-                            # Check if we have won
-                            wordle.have_we_won(current_row)
-                            # Increment the row and reset the col
-                            current_row = current_row + 1
-                            current_col = 0
-                            # Check if we have lost
-                            if current_row == gc.GRID_SIZE.value[0]:
-                                wordle.game_data['loose'] = True
-                                wordle.game_data['game_over'] = True
+                    if current_col == gc.GRID_SIZE.value[1]\
+                          and wordle.is_it_a_word(current_row):
+                        # Check the submission
+                        wordle.process_results(current_row)
+                        # Decrement the score
+                        wordle.update_score()
+                        # Check if we have won
+                        wordle.have_we_won(current_row)
+                        # Increment the row and reset the col
+                        current_row = current_row + 1
+                        current_col = 0
+                        # Check if we have lost
+                        if current_row == gc.GRID_SIZE.value[0] and\
+                                not wordle.game_data['win']:
+                            wordle.game_data['lose'] = True
+                            wordle.game_data['game_over'] = True
+                            wordle.draw_title()
                 if event.key == pygame.K_SPACE\
                         and wordle.game_data['game_over']:
                     wordle = Wordle()

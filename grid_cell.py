@@ -42,20 +42,20 @@ class GridCell:
         key_char_text = gc.font.value.render(
             key_char, True, gc.COLOURS.value["BLACK"])
         gc.SURFACE.value.blit(key_char_text,
-                             (self.col * gc.CELL_SIZE.value +
-                              gc.CELL_SIZE.value // 2 -
-                              key_char_text.get_width() // 2,
-                              self.row * gc.CELL_SIZE.value +
-                              gc.CELL_SIZE.value // 2 -
-                              key_char_text.get_height() // 2))
+                              (self.col * gc.CELL_SIZE.value +
+                               gc.CELL_SIZE.value // 2 -
+                               key_char_text.get_width() // 2,
+                               self.row * gc.CELL_SIZE.value +
+                               gc.CELL_SIZE.value // 2 -
+                               key_char_text.get_height() // 2))
 
     def fill_ui_area(self, colour):
-            """
-            Draw a filled cell to the surface
-            """
-            pygame.draw.rect(gc.SURFACE.value,
-                            gc.COLOURS.value[f"{colour}"],
-                            (0,
-                            gc.WINDOW_HEIGHT.value // 1.47,
-                            gc.WINDOW_WIDTH.value,
-                            gc.WINDOW_HEIGHT.value // 2))
+        """
+        Draw a filled cell to the surface
+        """
+        pygame.draw.rect(gc.SURFACE.value,
+                         gc.COLOURS.value[f"{colour}"],
+                         (0,
+                          gc.WINDOW_HEIGHT.value // 1.47,
+                          gc.WINDOW_WIDTH.value,
+                          gc.WINDOW_HEIGHT.value // 2))

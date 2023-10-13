@@ -4,6 +4,7 @@ Module to display the game UI
 import pygame
 from config import GameConstants as gc
 
+
 class Display:
     """
     Class to display the game data to the screen
@@ -23,7 +24,6 @@ class Display:
         gc.SURFACE.value.blit(self.message, (self.coord[0], self.coord[1]))
         if self.bound:
             self.bound_box()
-
 
     def bound_box(self):
         """
