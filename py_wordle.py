@@ -11,25 +11,6 @@ from grid_cell import GridCell
 from display import Display
 
 
-def load_random_word():
-    """
-    Function to load the word_list
-    Returns a random word string
-    """
-    # Load word list from a file
-    try:
-        with open("wordlist.txt", "r", encoding="utf8") as file:
-            words = [line.strip().upper() for line in file.readlines()]
-    except FileNotFoundError as file_error:
-        print("File not found", file_error)
-        sys.exit(1)
-    # Select a random word for the player to guess
-    word_to_guess = random.choice(words)
-    # word_to_guess = "ALLOW" # Input "LOLLY" to test
-    # Result should be Y Y G _ _ _
-    return word_to_guess, words
-
-
 class Wordle:
     """
     Wordle main game class
@@ -57,7 +38,7 @@ class Wordle:
         }
 
         # Load the random word and words in
-        self.the_word, self.words = load_random_word()
+        self.the_word, self.words = self.load_random_word()
 
         # Initialise the letter
         # Need to make a spare end column for backspace
@@ -69,6 +50,25 @@ class Wordle:
 
         # Initialise the guessed word
         print("Debug here is the word " + self.the_word)
+
+    @staticmethod
+    def load_random_word():
+        """
+        Function to load the word_list
+        Returns a random word string
+        """
+        # Load word list from a file
+        try:
+            with open("wordlist.txt", "r", encoding="utf8") as file:
+                words = [line.strip().upper() for line in file.readlines()]
+        except FileNotFoundError as file_error:
+            print("File not found", file_error)
+            sys.exit(1)
+        # Select a random word for the player to guess
+        word_to_guess = random.choice(words)
+        # word_to_guess = "ALLOW" # Input "LOLLY" to test
+        # Result should be Y Y G _ _ _
+        return word_to_guess, words
 
     def update_score(self):
         """
@@ -106,6 +106,7 @@ class Wordle:
         """
         cell_update = GridCell(row, col)
         cell_update.print_char(self.letter_store[row][col])
+        cell_update.vibrate_cell()
 
     def process_results(self, current_row):
         """

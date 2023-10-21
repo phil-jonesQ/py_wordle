@@ -59,3 +59,10 @@ class GridCell:
                           gc.WINDOW_HEIGHT.value // 1.47,
                           gc.WINDOW_WIDTH.value,
                           gc.WINDOW_HEIGHT.value // 2))
+
+    def vibrate_cell(self):
+        """
+        Move the cell to the next position
+        """
+        self.col += 25
+        self.col -= 23
