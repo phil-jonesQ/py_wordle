@@ -5,6 +5,8 @@ phil.jones.24.4@gmail.com
 
 import random
 import sys
+from pathlib import Path
+
 import pygame
 from config import GameConstants as gc
 from grid_cell import GridCell
@@ -39,6 +41,8 @@ class Wordle:
 
         # Load the random word and words in
         self.the_word, self.words = self.load_random_word()
+        self.valid_guesses = set(self.load_word_list("guess_words.txt"))
+        self.valid_guesses.update(self.words)
 
         # Initialise the letter
         # Need to make a spare end column for backspace
@@ -52,18 +56,25 @@ class Wordle:
         print("Debug here is the word " + self.the_word)
 
     @staticmethod
+    def load_word_list(filename):
+        """Load and uppercase a newline-delimited word list."""
+        wordlist_path = Path(__file__).with_name(filename)
+        try:
+            with wordlist_path.open("r", encoding="utf8") as file:
+                words = [line.strip().upper() for line in file.readlines()]
+        except FileNotFoundError as file_error:
+            print("File not found", file_error)
+            sys.exit(1)
+
+        return words
+
+    @staticmethod
     def load_random_word():
         """
         Function to load the word_list
         Returns a random word string
         """
-        # Load word list from a file
-        try:
-            with open("wordlist.txt", "r", encoding="utf8") as file:
-                words = [line.strip().upper() for line in file.readlines()]
-        except FileNotFoundError as file_error:
-            print("File not found", file_error)
-            sys.exit(1)
+        words = Wordle.load_word_list("wordlist.txt")
         # Select a random word for the player to guess
         word_to_guess = random.choice(words)
         # word_to_guess = "ALLOW" # Input "LOLLY" to test
@@ -195,10 +206,7 @@ class Wordle:
         # Convert to a string
         guessed_word = "".join(current_guess)
 
-        # Return the result
-        if guessed_word in self.words:
-            return True
-        return False
+        return guessed_word in self.valid_guesses
 
     def draw_title(self):
         """

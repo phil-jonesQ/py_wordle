@@ -1,0 +1,22 @@
+[project]
+name = "py-wordle"
+version = "0.1.0"
+description = "A simple Wordle clone built with pygame"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "pygame==2.5.2",
+]
+
+[dependency-groups]
+dev = [
+    "isort==5.12.0",
+    "pylint==2.17.7",
+]
+build = [
+    "pyinstaller>=5.7.0,<7",
+]
+
+[tool.uv]
+package = false
+default-groups = []
