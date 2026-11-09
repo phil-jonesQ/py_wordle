@@ -3,6 +3,7 @@ Simple Wordle Clone
 phil.jones.24.4@gmail.com
 """
 
+import argparse
 import random
 import sys
 from pathlib import Path
@@ -11,13 +12,15 @@ import pygame
 from config import GameConstants as gc
 from grid_cell import GridCell
 from display import Display
+from audio import AudioFeedback
 
 
 class Wordle:
     """
     Wordle main game class
     """
-    def __init__(self):
+    def __init__(self, debug=False):
+        self.debug = debug
         self.reset()
         self.surface = gc.SURFACE.value
 
@@ -38,22 +41,22 @@ class Wordle:
             'lose': False,
             'game_over': False
         }
+        self.status_message = ""
 
         # Load the random word and words in
         self.the_word, self.words = self.load_random_word()
         self.valid_guesses = set(self.load_word_list("guess_words.txt"))
         self.valid_guesses.update(self.words)
 
-        # Initialise the letter
-        # Need to make a spare end column for backspace
-        self.letter_store = [['_' for _ in range(gc.GRID_SIZE.value[1] + 1)]
+        # Initialise the letter grid
+        self.letter_store = [['_' for _ in range(gc.GRID_SIZE.value[1])]
                              for _ in range(gc.GRID_SIZE.value[0])]
         self.grid_state = {(row, col): 'DEFAULT'
                            for row in range(gc.GRID_SIZE.value[0])
                            for col in range(gc.GRID_SIZE.value[1])}
 
-        # Initialise the guessed word
-        print("Debug here is the word " + self.the_word)
+        if self.debug:
+            print(f"Debug: secret word is {self.the_word}")
 
     @staticmethod
     def load_word_list(filename):
@@ -147,7 +150,7 @@ class Wordle:
         based on code by Iulian Intorsureanu
         """
         # Initialise result
-        result = [' '] * 5
+        result = [' '] * len(self.the_word)
 
         # Make a copy of the word and guess as lists
         the_word_copy = list(self.the_word)
@@ -195,6 +198,41 @@ class Wordle:
         if check_word == self.the_word:
             self.game_data['win'] = True
             self.game_data['game_over'] = True
+            return True
+        return False
+
+    def add_letter(self, current_row, current_col, letter):
+        """Add a letter if the current guess has room; return the new column."""
+        if current_col >= gc.GRID_SIZE.value[1]:
+            return current_col
+
+        self.letter_store[current_row][current_col] = letter
+        self.status_message = ""
+        return current_col + 1
+
+    def remove_letter(self, current_row, current_col):
+        """Remove the previous letter if one exists; return the new column."""
+        if current_col == 0:
+            return current_col
+
+        current_col -= 1
+        self.letter_store[current_row][current_col] = '_'
+        self.status_message = ""
+        return current_col
+
+    def submit_guess(self, current_row):
+        """Validate and score the current row. Return whether it was submitted."""
+        if self.decode_guess(current_row).count('_'):
+            self.status_message = "Enter a five-letter word"
+            return False
+        if not self.is_it_a_word(current_row):
+            self.status_message = "Not in word list"
+            return False
+
+        self.status_message = ""
+        self.process_results(current_row)
+        self.update_score()
+        self.have_we_won(current_row)
         return True
 
     def is_it_a_word(self, current_row):
@@ -223,7 +261,7 @@ class Wordle:
         for i, letter in enumerate(list(string_to_render)):
             if i % 2 == 0:
                 colour = "GREEN"
-            elif i == list(string_to_render)[-1]:
+            elif i == len(string_to_render) - 1:
                 colour = "GREY"
             else:
                 colour = "YELLOW"
@@ -233,6 +271,14 @@ class Wordle:
                               "large",
                               letter,
                               True)
+            display.draw()
+        if self.status_message:
+            display = Display(gc.WINDOW_WIDTH.value // 4,
+                              gc.WINDOW_HEIGHT.value // 1.3,
+                              gc.COLOURS.value["WHITE"],
+                              "small",
+                              self.status_message,
+                              False)
             display.draw()
         if self.game_data.get('game_over'):
             go_message = "GAME OVER - SPACE TO PLAY AGAIN"
@@ -254,15 +300,25 @@ class Wordle:
             display.draw()
 
 
-def main():
+def parse_args(argv=None):
+    parser = argparse.ArgumentParser(description="Play a simple Wordle clone.")
+    parser.add_argument(
+        "-d", "--debug", action="store_true",
+        help="print the secret word at the start of each round")
+    return parser.parse_args(argv)
+
+
+def main(argv=None):
     """
     Main game loop function
     """
+    args = parse_args(argv)
+
     # Create a Game Instance
-    wordle = Wordle()
+    wordle = Wordle(debug=args.debug)
+    audio = AudioFeedback()
     current_col = wordle.game_state.get('current_col')
     current_row = wordle.game_state.get('current_row')
-    letter_store = wordle.letter_store
 
     # Main game loop
     while True:
@@ -276,44 +332,41 @@ def main():
             # Handle Inputs
             if event.type == pygame.KEYDOWN:
                 # Handle key input
-                if event.key >= 97 and event.key <= 122\
+                if pygame.K_a <= event.key <= pygame.K_z\
                         and not wordle.game_data['game_over']:
                     key_char = chr(event.key).upper()
-                    letter_store[current_row][current_col] = key_char
-                    # Increment the col
-                    current_col += 1
-                    if current_col >= gc.GRID_SIZE.value[1]:
-                        current_col = gc.GRID_SIZE.value[1]
+                    next_col = wordle.add_letter(
+                        current_row, current_col, key_char)
+                    if next_col != current_col:
+                        audio.play("type")
+                    current_col = next_col
                 if event.key == pygame.K_BACKSPACE\
                         and not wordle.game_data['game_over']:
-                    letter_store[current_row][current_col - 1] = '_'
-                    current_col = current_col - 1
-                    current_col = max(current_col, 0)
+                    next_col = wordle.remove_letter(current_row, current_col)
+                    if next_col != current_col:
+                        audio.play("type")
+                    current_col = next_col
                 if event.key == pygame.K_RETURN\
                         and not wordle.game_data['game_over']:
-                    if current_col == gc.GRID_SIZE.value[1]\
-                          and wordle.is_it_a_word(current_row):
-                        # Check the submission
-                        wordle.process_results(current_row)
-                        # Decrement the score
-                        wordle.update_score()
-                        # Check if we have won
-                        wordle.have_we_won(current_row)
+                    if wordle.submit_guess(current_row):
+                        if wordle.game_data['win']:
+                            audio.play("win")
+                        elif current_row == gc.GRID_SIZE.value[0] - 1:
+                            wordle.game_data['lose'] = True
+                            wordle.game_data['game_over'] = True
+                            audio.play("lose")
+                        else:
+                            audio.play("submit")
                         # Increment the row and reset the col
                         current_row = current_row + 1
                         current_col = 0
-                        # Check if we have lost
-                        if current_row == gc.GRID_SIZE.value[0] and\
-                                not wordle.game_data['win']:
-                            wordle.game_data['lose'] = True
-                            wordle.game_data['game_over'] = True
-                            wordle.draw_title()
+                    else:
+                        audio.play("invalid")
                 if event.key == pygame.K_SPACE\
                         and wordle.game_data['game_over']:
-                    wordle = Wordle()
+                    wordle = Wordle(debug=args.debug)
                     current_col = wordle.game_state.get('current_col')
                     current_row = wordle.game_state.get('current_row')
-                    letter_store = wordle.letter_store
 
         # Clear the screen with background color
         gc.SURFACE.value.fill(gc.COLOURS.value["BG_COLOUR"])

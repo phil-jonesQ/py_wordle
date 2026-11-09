@@ -2,10 +2,12 @@
 
 ## SCOWL / English Speller Database
 
-`guess_words.txt` is derived from the `en_US-large.txt` word list in the
-[SCOWL/English Speller Database wordlist-diff repository](https://github.com/en-wl/wordlist-diff/tree/rel-2026.02.25).
-It contains lowercase, five-letter English words from that list, together
-with any existing game answers missing from the source list.
+`guess_words.txt` is derived from the standard British `en_GB-ise.txt` word
+list in the [SCOWL/English Speller Database wordlist-diff
+repository](https://github.com/en-wl/wordlist-diff/tree/rel-2026.02.25). It
+contains lowercase, five-letter English words from that list. The answer list
+in `wordlist.txt` is the pre-existing game list filtered to words that also
+occur in the standard British list.
 
 Copyright 2000-2026 by Kevin Atkinson
 
@@ -15,3 +17,10 @@ above copyright notice appears in all copies and that both the above
 copyright notice and this notice appear in supporting documentation. Kevin
 Atkinson makes no representations about the suitability of this database for
 any purpose. It is provided "as is" without express or implied warranty.
+
+## Existing answer-list content
+
+The original answer words predate this change, and their source and license
+are not recorded in the repository history. Filtering the list against SCOWL
+does not change the licensing of those existing entries; verify their
+provenance before redistributing the game.

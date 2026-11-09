@@ -15,7 +15,7 @@ if (Test-Path .\dist){
 }
 
 Write-Output "Building Application..."
-& uv run --locked --group build pyinstaller .\py_wordle.py --onefile --name wordle_main --add-data "$PSScriptRoot\wordlist.txt;." --add-data "$PSScriptRoot\guess_words.txt;."
+& uv run --locked --group build pyinstaller .\py_wordle.py --onefile --name wordle_main --specpath "$PSScriptRoot\build" --add-data "$PSScriptRoot\wordlist.txt;." --add-data "$PSScriptRoot\guess_words.txt;."
 if ($LASTEXITCODE -ne 0) {
     exit $LASTEXITCODE
 }
