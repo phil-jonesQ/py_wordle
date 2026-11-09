@@ -6,7 +6,6 @@ abbey
 abbot
 abhor
 abide
-abled
 abler
 abode
 abort
@@ -37,7 +36,6 @@ adore
 adorn
 adult
 aegis
-aeons
 affix
 afire
 afoot
@@ -48,13 +46,11 @@ agape
 agate
 agent
 agile
-aging
 aglow
 agony
 agree
 ahead
 aided
-aider
 aides
 ailed
 aimed
@@ -94,7 +90,6 @@ amend
 amigo
 amiss
 amity
-among
 amour
 ample
 amply
@@ -118,20 +113,15 @@ apace
 apart
 aphid
 aping
-apnea
-appal
 apple
 apply
 apron
 aptly
-arbor
-ardor
 areas
 arena
 argue
 arise
 armed
-armor
 aroma
 arose
 array
@@ -146,7 +136,6 @@ asked
 askew
 aspen
 assay
-asses
 asset
 aster
 astir
@@ -162,7 +151,6 @@ auger
 aught
 augur
 aunts
-aunty
 auras
 autos
 avail
@@ -180,7 +168,6 @@ awful
 awoke
 axial
 axiom
-axion
 axles
 azure
 babel
@@ -240,13 +227,11 @@ beans
 beard
 bears
 beast
-beaux
 beech
 beefy
 beets
 befit
 began
-begat
 beget
 begin
 begot
@@ -274,7 +259,6 @@ bezel
 bible
 bicep
 biddy
-bided
 bides
 bight
 bigot
@@ -306,9 +290,7 @@ bleat
 bleed
 bleep
 blend
-blent
 bless
-blest
 blimp
 blind
 blink
@@ -347,7 +329,6 @@ bombs
 bonds
 boned
 bones
-boney
 bongo
 bonny
 bonus
@@ -370,7 +351,6 @@ bosom
 bossy
 botch
 bough
-boule
 bound
 bouts
 bowed
@@ -401,7 +381,6 @@ bribe
 brick
 bride
 brief
-brier
 brigs
 brims
 brine
@@ -446,7 +425,6 @@ burnt
 burro
 burrs
 burst
-bused
 bushy
 busts
 butch
@@ -462,7 +440,6 @@ cable
 cacao
 cache
 cacti
-caddy
 cadet
 cadre
 caged
@@ -487,7 +464,6 @@ canto
 caper
 capes
 capon
-caput
 carat
 cards
 cared
@@ -544,7 +520,6 @@ chick
 chide
 chief
 child
-chili
 chill
 chime
 china
@@ -631,7 +606,6 @@ coins
 colds
 colic
 colon
-color
 colts
 combs
 comer
@@ -724,7 +698,6 @@ crows
 crude
 cruel
 crumb
-crump
 crush
 crust
 crypt
@@ -742,7 +715,6 @@ curls
 curly
 curry
 curse
-curst
 curve
 curvy
 cutie
@@ -815,7 +787,6 @@ dicey
 dicta
 diets
 digit
-dikes
 dilly
 dimes
 dimly
@@ -850,7 +821,6 @@ dolly
 domed
 domes
 donor
-donut
 dooms
 doors
 dopey
@@ -884,17 +854,14 @@ dread
 dream
 dregs
 dress
-drews
 dried
 drier
 dries
 drift
 drill
-drily
 drink
 drips
 drive
-droit
 droll
 drone
 drool
@@ -908,7 +875,6 @@ druid
 drums
 drunk
 dryer
-dryly
 ducal
 ducat
 duchy
@@ -984,7 +950,6 @@ enema
 enemy
 enjoy
 ennui
-enrol
 ensue
 enter
 entry
@@ -1023,8 +988,6 @@ expel
 extol
 extra
 exult
-eying
-eyrie
 fable
 faced
 faces
@@ -1056,12 +1019,10 @@ fatty
 fault
 fauna
 fauns
-favor
 fawns
 fears
 feast
 feats
-fecal
 feeds
 feels
 feign
@@ -1083,7 +1044,6 @@ fetus
 feuds
 fever
 fewer
-fiber
 fiche
 ficus
 fiefs
@@ -1112,7 +1072,6 @@ finer
 fines
 finis
 finny
-fiord
 fired
 fires
 firms
@@ -1172,7 +1131,6 @@ flung
 flunk
 flush
 flute
-flyer
 foams
 foamy
 focal
@@ -1239,7 +1197,6 @@ funds
 fungi
 funky
 funny
-furor
 furry
 furze
 fused
@@ -1272,7 +1229,6 @@ gauzy
 gavel
 gawky
 gayer
-gayly
 gazed
 gazer
 gazes
@@ -1289,13 +1245,11 @@ germs
 ghost
 ghoul
 giant
-gibes
 giddy
 gifts
 gilds
 gills
 gimme
-gipsy
 girds
 girls
 girly
@@ -1371,7 +1325,6 @@ great
 greed
 green
 greet
-greys
 grief
 grill
 grime
@@ -1446,7 +1399,6 @@ hated
 hater
 hauls
 haunt
-haute
 haven
 havoc
 hawks
@@ -1476,7 +1428,6 @@ hence
 herbs
 herds
 heron
-heros
 hewed
 hides
 hills
@@ -1486,7 +1437,6 @@ hinds
 hinge
 hints
 hippo
-hippy
 hired
 hires
 hitch
@@ -1501,7 +1451,6 @@ holly
 homer
 homes
 honey
-honor
 hoods
 hoofs
 hooks
@@ -1527,10 +1476,8 @@ hulks
 hulls
 human
 humid
-humor
 humph
 humps
-humus
 hunch
 hunky
 hunts
@@ -1558,7 +1505,6 @@ idler
 idols
 idyll
 igloo
-iliac
 image
 imbue
 impel
@@ -1620,7 +1566,6 @@ jumps
 jumpy
 junks
 junta
-junto
 juror
 kappa
 karma
@@ -1659,7 +1604,6 @@ knows
 koala
 krill
 label
-labor
 laced
 laces
 lacks
@@ -1700,7 +1644,6 @@ leafy
 leaks
 leaky
 leans
-leant
 leaps
 leapt
 learn
@@ -1732,7 +1675,6 @@ lifts
 light
 liked
 liken
-liker
 likes
 lilac
 limbo
@@ -1769,6 +1711,7 @@ loges
 logic
 login
 loins
+lolly
 longs
 looks
 looms
@@ -1853,7 +1796,6 @@ marsh
 marts
 masks
 mason
-masse
 masts
 match
 mated
@@ -1915,7 +1857,6 @@ minty
 minus
 mirth
 miser
-missy
 mists
 mites
 mixed
@@ -1931,9 +1872,7 @@ modes
 mogul
 moist
 molar
-moldy
 moles
-momma
 money
 monks
 month
@@ -1954,7 +1893,6 @@ moths
 motif
 motor
 motto
-moult
 mound
 mount
 mourn
@@ -2031,7 +1969,6 @@ noose
 north
 nosed
 noses
-nosey
 notch
 noted
 notes
@@ -2052,7 +1989,6 @@ obese
 obeys
 occur
 ocean
-ochre
 octal
 octet
 odder
@@ -2065,7 +2001,6 @@ oiled
 olden
 older
 olive
-ombre
 omega
 omens
 omits
@@ -2095,7 +2030,6 @@ ovary
 ovate
 ovens
 overt
-ovine
 ovoid
 owing
 owned
@@ -2159,7 +2093,6 @@ peaks
 peals
 pearl
 pears
-pease
 pecan
 pecks
 pedal
@@ -2169,7 +2102,6 @@ pelts
 penal
 pence
 penis
-penne
 penny
 peons
 perch
@@ -2193,7 +2125,6 @@ piece
 piers
 piety
 piggy
-pigmy
 pikes
 piled
 piles
@@ -2204,7 +2135,6 @@ pined
 pines
 piney
 pinks
-pinky
 pinto
 pints
 pious
@@ -2233,7 +2163,6 @@ plead
 pleas
 pleat
 plied
-plier
 plies
 plots
 pluck
@@ -2244,7 +2173,6 @@ plump
 plums
 plunk
 plush
-podia
 poems
 poesy
 poets
@@ -2292,7 +2220,6 @@ pride
 pried
 pries
 prime
-primo
 print
 prior
 prism
@@ -2382,7 +2309,6 @@ rajah
 raked
 rakes
 rally
-ralph
 ramen
 ranch
 randy
@@ -2418,7 +2344,6 @@ rebus
 rebut
 recap
 recur
-recut
 reeds
 reedy
 reefs
@@ -2463,7 +2388,6 @@ rifle
 rifts
 right
 rigid
-rigor
 riled
 rills
 rimes
@@ -2531,7 +2455,6 @@ ruled
 ruler
 rules
 rumba
-rumor
 runes
 rungs
 rupee
@@ -2539,7 +2462,6 @@ rural
 ruses
 rusty
 sable
-sabre
 sacks
 sadly
 safer
@@ -2548,7 +2470,6 @@ sages
 sahib
 sails
 saint
-saith
 salad
 sales
 sally
@@ -2572,7 +2493,6 @@ sauna
 saute
 saved
 saves
-savor
 savoy
 savvy
 sawed
@@ -2647,7 +2567,6 @@ shake
 shaky
 shale
 shall
-shalt
 shame
 shams
 shank
@@ -2665,7 +2584,6 @@ sheen
 sheep
 sheer
 sheet
-sheik
 shelf
 shell
 shied
@@ -2682,11 +2600,9 @@ shock
 shoes
 shone
 shook
-shoon
 shoot
 shops
 shore
-shorn
 short
 shots
 shout
@@ -2766,7 +2682,6 @@ slept
 slice
 slick
 slide
-slily
 slime
 slimy
 sling
@@ -2821,7 +2736,6 @@ snort
 snout
 snows
 snowy
-snuck
 snuff
 soapy
 soars
@@ -2854,7 +2768,6 @@ sowed
 sower
 space
 spade
-spake
 spank
 spans
 spare
@@ -2867,7 +2780,6 @@ spear
 speck
 speed
 spell
-spelt
 spend
 spent
 sperm
@@ -2879,7 +2791,6 @@ spies
 spike
 spiky
 spill
-spilt
 spine
 spins
 spiny
@@ -3080,7 +2991,6 @@ teems
 teens
 teeth
 tells
-tempi
 tempo
 temps
 tends
@@ -3092,7 +3002,6 @@ tents
 tepee
 tepid
 terms
-terra
 terse
 tests
 testy
@@ -3160,7 +3069,6 @@ tomes
 tonal
 toned
 tones
-tonga
 tongs
 tonic
 tools
@@ -3237,7 +3145,6 @@ tubes
 tufts
 tulip
 tulle
-tumor
 tuned
 tunes
 tunic
@@ -3297,25 +3204,21 @@ using
 usual
 usurp
 usury
-utile
 utter
 vague
 vales
 valet
 valid
-valor
 value
 valve
 vanes
 vapid
-vapor
 vases
 vault
 vaunt
 vegan
 veils
 veins
-veldt
 venal
 venom
 vents
@@ -3334,7 +3237,6 @@ vices
 video
 views
 vigil
-vigor
 viler
 villa
 vines
@@ -3349,7 +3251,6 @@ vista
 vital
 vivid
 vixen
-vizor
 vocal
 vodka
 vogue
@@ -3378,7 +3279,6 @@ wails
 waist
 waits
 waive
-waked
 waken
 wakes
 walks
@@ -3414,7 +3314,6 @@ weeks
 weeps
 weigh
 weird
-welch
 wells
 welsh
 wench
@@ -3433,7 +3332,6 @@ whine
 whiny
 whips
 whirl
-whirr
 whisk
 whist
 white
@@ -3477,7 +3375,6 @@ woods
 woody
 wooed
 wooer
-wooly
 woozy
 words
 wordy
@@ -3493,7 +3390,6 @@ wound
 woven
 wrack
 wraps
-wrapt
 wrath
 wreak
 wreck
